@@ -1,0 +1,52 @@
+# IA_P5
+# Definición de la función para encontrar el conjunto al que pertenece un vértice
+def encontrar(padre, i):
+    if padre[i] == i:
+        return i
+    return encontrar(padre, padre[i])
+
+# Función para unir dos conjuntos
+def unir(padre, rango, x, y):
+    raiz_x = encontrar(padre, x)
+    raiz_y = encontrar(padre, y)
+
+    padre[raiz_x] = raiz_y
+
+# Función para aplicar el algoritmo de Kruskal
+def kruskal(grafo, vertices):
+    resultado = []
+
+    # Paso 1: Inicializar los conjuntos
+    padre = list(range(vertices))
+
+    # Paso 2: Ordenar las aristas por peso
+    aristas = []
+    for i in range(vertices):
+        for j in range(i + 1, vertices):
+            if grafo[i][j] != 0:
+                aristas.append([i, j, grafo[i][j]])
+    aristas = sorted(aristas, key=lambda item: item[2])
+
+    # Paso 3: Seleccionar aristas con el menor peso sin formar ciclos
+    for u, v, w in aristas:
+        if encontrar(padre, u) != encontrar(padre, v):
+            resultado.append([u, v, w])
+            unir(padre, None, u, v)
+
+    return resultado
+
+# Ejemplo de uso del algoritmo de Kruskal
+grafo = [
+    [0, 2, 0, 6],
+    [2, 0, 3, 8],
+    [0, 3, 0, 0],
+    [6, 8, 0, 0]
+]
+vertices = 4
+
+arbol_expansion_minima = kruskal(grafo, vertices)
+
+# Imprimir el resultado
+print("Árbol de expansión mínima:")
+for u, v, w in arbol_expansion_minima:
+    print(f"{u} - {v}: Peso {w}")
